@@ -1,0 +1,70 @@
+{
+  "strategy": "direct_prompting",
+  "questions": [
+    {
+      "id": 1,
+      "question": "What keyword is used to define a function in Python?",
+      "options": {
+        "A": "def",
+        "B": "func",
+        "C": "function",
+        "D": "class"
+      },
+      "correct_answer": "A",
+      "explanation": "According to the material, a function is defined using the def keyword.",
+      "source_concept": "Function Definition"
+    },
+    {
+      "id": 2,
+      "question": "How are parameters and arguments distinguished in Python functions?",
+      "options": {
+        "A": "Parameters are values supplied in a call; Arguments are names in definition.",
+        "B": "Parameters are names in definition; Arguments are values supplied in a call.",
+        "C": "Both terms refer to the names used in the function definition.",
+        "D": "Both terms refer to the values supplied when calling the function."
+      },
+      "correct_answer": "B",
+      "explanation": "The text specifies that parameters are names for values received, while arguments are the values supplied during a call.",
+      "source_concept": "Parameters and Arguments"
+    },
+    {
+      "id": 3,
+      "question": "What does Python return if a function reaches the end of its body without a return statement?",
+      "options": {
+        "A": "It raises an error.",
+        "B": "It returns the last variable assigned.",
+        "C": "It returns None.",
+        "D": "It returns True."
+      },
+      "correct_answer": "C",
+      "explanation": "The material states that if a function ends without executing a return statement, Python returns None.",
+      "source_concept": "Return Statement"
+    },
+    {
+      "id": 4,
+      "question": "Where can a variable assigned inside a function be read?",
+      "options": {
+        "A": "Only outside the function.",
+        "B": "Everywhere in the program.",
+        "C": "Only inside the function unless declared global.",
+        "D": "Nowhere at all."
+      },
+      "correct_answer": "C",
+      "explanation": "The teaching material explains that variables assigned inside a function are local to that function unless declared global.",
+      "source_concept": "Variable Scope"
+    },
+    {
+      "id": 5,
+      "question": "What is the rule for placing default parameter values in a function definition?",
+      "options": {
+        "A": "They must come before parameters without default values.",
+        "B": "They can be placed in any order.",
+        "C": "They must come after parameters without default values.",
+        "D": "They cannot be used with functions."
+      },
+      "correct_answer": "C",
+      "explanation": "The material specifies that parameters with default values must come after parameters without default values in a function definition.",
+      "source_concept": "Default Parameter Values"
+    }
+  ]
+}

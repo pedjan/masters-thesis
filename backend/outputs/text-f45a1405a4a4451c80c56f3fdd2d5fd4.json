@@ -1,0 +1,70 @@
+{
+  "strategy": "direct_prompting",
+  "questions": [
+    {
+      "id": 1,
+      "question": "What keyword is used to define a function in Python?",
+      "options": {
+        "A": "def",
+        "B": "func",
+        "C": "function",
+        "D": "declare"
+      },
+      "correct_answer": "A",
+      "explanation": "The teaching material states that a function is defined with the def keyword.",
+      "source_concept": "Function definition"
+    },
+    {
+      "id": 2,
+      "question": "What are the names for values that a function receives when it is called?",
+      "options": {
+        "A": "Parameters",
+        "B": "Variables",
+        "C": "Arguments",
+        "D": "Constants"
+      },
+      "correct_answer": "C",
+      "explanation": "The material specifies that parameters are names in the definition, while values supplied in a call are arguments.",
+      "source_concept": "Parameters and Arguments"
+    },
+    {
+      "id": 3,
+      "question": "What does Python return if a function reaches the end of its body without executing a return statement?",
+      "options": {
+        "A": "Zero",
+        "B": "False",
+        "C": "None",
+        "D": "Empty string"
+      },
+      "correct_answer": "C",
+      "explanation": "According to the text, if a function reaches the end without a return statement, Python returns None.",
+      "source_concept": "Return statements"
+    },
+    {
+      "id": 4,
+      "question": "Where can a variable assigned inside a function normally be read?",
+      "options": {
+        "A": "Only outside the function",
+        "B": "Only inside the function",
+        "C": "Everywhere in the program",
+        "D": "Only if declared global"
+      },
+      "correct_answer": "B",
+      "explanation": "The material explains that variables assigned inside a function are local and cannot normally be read outside.",
+      "source_concept": "Variable scope"
+    },
+    {
+      "id": 5,
+      "question": "In a function definition, where must parameters with default values be placed?",
+      "options": {
+        "A": "Before parameters without default values",
+        "B": "After parameters without default values",
+        "C": "At the beginning of the definition",
+        "D": "Only if they are integers"
+      },
+      "correct_answer": "B",
+      "explanation": "The text requires that parameters with default values must come after parameters without default values.",
+      "source_concept": "Default parameter values"
+    }
+  ]
+}

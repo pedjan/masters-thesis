@@ -1,0 +1,70 @@
+{
+  "strategy": "direct_prompting",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which keyword is used to define a function in Python?",
+      "options": {
+        "A": "class",
+        "B": "def",
+        "C": "import",
+        "D": "return"
+      },
+      "correct_answer": "B",
+      "explanation": "The teaching material explicitly states that a function is defined with the def keyword.",
+      "source_concept": "Function definition"
+    },
+    {
+      "id": 2,
+      "question": "What term refers to the values supplied when calling a function?",
+      "options": {
+        "A": "Parameters",
+        "B": "Arguments",
+        "C": "Variables",
+        "D": "Constants"
+      },
+      "correct_answer": "B",
+      "explanation": "According to the material, parameters are names in the definition, while values supplied in a call are arguments.",
+      "source_concept": "Parameters and Arguments"
+    },
+    {
+      "id": 3,
+      "question": "What does Python return if a function reaches the end of its body without executing a return statement?",
+      "options": {
+        "A": "True",
+        "B": "False",
+        "C": "None",
+        "D": "0"
+      },
+      "correct_answer": "C",
+      "explanation": "The text specifies that if a function ends without a return statement, Python returns None.",
+      "source_concept": "Return Statement"
+    },
+    {
+      "id": 4,
+      "question": "Where must parameters with default values be placed in a function definition?",
+      "options": {
+        "A": "Before parameters without defaults",
+        "B": "After parameters without default values",
+        "C": "At the beginning only",
+        "D": "Anywhere in the list"
+      },
+      "correct_answer": "B",
+      "explanation": "The material states that parameters with default values must come after parameters without default values.",
+      "source_concept": "Default Parameter Values"
+    },
+    {
+      "id": 5,
+      "question": "Why can Python functions be passed as arguments to other functions?",
+      "options": {
+        "A": "Because they are global variables",
+        "B": "Because they are objects",
+        "C": "Because they are strings",
+        "D": "Because they are integers"
+      },
+      "correct_answer": "B",
+      "explanation": "The teaching material explains that functions can be passed as arguments because functions are objects.",
+      "source_concept": "Functions as Objects"
+    }
+  ]
+}

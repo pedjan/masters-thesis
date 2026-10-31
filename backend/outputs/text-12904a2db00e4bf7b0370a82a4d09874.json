@@ -1,0 +1,70 @@
+{
+  "strategy": "direct_prompting",
+  "questions": [
+    {
+      "id": 1,
+      "question": "In Python function definitions, what is the difference between a parameter and an argument?",
+      "options": {
+        "A": "Parameters are the names in the definition and arguments are the values supplied in a call",
+        "B": "Arguments are the names in the definition and parameters are the values supplied in a call",
+        "C": "Both terms refer to the same concept regardless of context",
+        "D": "Neither parameters nor arguments exist in Python functions"
+      },
+      "correct_answer": "A",
+      "explanation": "The material states that parameters are names for values received when a function is called, while the values supplied during the call are arguments.",
+      "source_concept": "Function definition and parameters vs. arguments"
+    },
+    {
+      "id": 2,
+      "question": "What value does Python return if a function reaches the end of its body without executing a return statement?",
+      "options": {
+        "A": "None",
+        "B": "The last variable value",
+        "C": "Zero",
+        "D": "An error is raised"
+      },
+      "correct_answer": "A",
+      "explanation": "According to the text, if a function ends without a return statement, Python returns None.",
+      "source_concept": "Return statement behavior"
+    },
+    {
+      "id": 3,
+      "question": "How are variables assigned inside a function treated regarding scope?",
+      "options": {
+        "A": "Global by default",
+        "B": "Local unless declared global",
+        "C": "Read-only outside the function",
+        "D": "Only accessible via print statements"
+      },
+      "correct_answer": "B",
+      "explanation": "The material specifies that variables assigned inside a function are local to that function unless they are declared global.",
+      "source_concept": "Variable scope and locality"
+    },
+    {
+      "id": 4,
+      "question": "What is the required order for parameters with and without default values in a function definition?",
+      "options": {
+        "A": "Default values must come first",
+        "B": "Non-default values must come first",
+        "C": "They can be mixed in any order",
+        "D": "Only functions with default values are allowed"
+      },
+      "correct_answer": "B",
+      "explanation": "The text states that parameters with default values must come after parameters without default values in a function definition.",
+      "source_concept": "Default parameter values ordering"
+    },
+    {
+      "id": 5,
+      "question": "Why can Python functions be passed as arguments to other functions?",
+      "options": {
+        "A": "Because they are strings",
+        "B": "Because they are objects",
+        "C": "Because they are global variables",
+        "D": "Because they have no return statements"
+      },
+      "correct_answer": "B",
+      "explanation": "The material explains that functions can be assigned to variables and passed as arguments because functions are objects.",
+      "source_concept": "Functions as objects"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "strategy": "direct_prompting",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which keyword is used to define a function in Python?",
+      "options": {
+        "A": "func",
+        "B": "def",
+        "C": "function",
+        "D": "class"
+      },
+      "correct_answer": "B",
+      "explanation": "The teaching material states that a function is a reusable block of code defined with the def keyword.",
+      "source_concept": "Function Definition"
+    },
+    {
+      "id": 2,
+      "question": "What are the names for values the function receives when it is called?",
+      "options": {
+        "A": "Parameters",
+        "B": "Arguments",
+        "C": "Variables",
+        "D": "Keywords"
+      },
+      "correct_answer": "B",
+      "explanation": "According to the text, parameters are names in the definition, while the values supplied in a call are arguments.",
+      "source_concept": "Parameters and Arguments"
+    },
+    {
+      "id": 3,
+      "question": "What value does Python return if a function reaches the end of its body without executing a return statement?",
+      "options": {
+        "A": "False",
+        "B": "0",
+        "C": "None",
+        "D": "Empty String"
+      },
+      "correct_answer": "C",
+      "explanation": "The material specifies that if a function ends without a return statement, Python returns None.",
+      "source_concept": "Return Statement Behavior"
+    },
+    {
+      "id": 4,
+      "question": "Where must parameters with default values be placed in a function definition?",
+      "options": {
+        "A": "Before parameters without default values",
+        "B": "After parameters without default values",
+        "C": "At the beginning of the list",
+        "D": "At the end of the list"
+      },
+      "correct_answer": "B",
+      "explanation": "The teaching material states that parameters with default values must come after parameters without default values.",
+      "source_concept": "Default Parameter Values"
+    },
+    {
+      "id": 5,
+      "question": "Why can Python functions be passed as arguments to other functions?",
+      "options": {
+        "A": "Because they are mutable",
+        "B": "Because they are objects",
+        "C": "Because they are global variables",
+        "D": "Because they are strings"
+      },
+      "correct_answer": "B",
+      "explanation": "The text explains that functions can be assigned to variables and passed as arguments because functions are objects.",
+      "source_concept": "Functions as Objects"
+    }
+  ]
+}
