@@ -1,0 +1,502 @@
+.app {
+  width: min(760px, 100%);
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  text-align: left;
+}
+
+.page-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.eyebrow {
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.page-header h1 {
+  margin: 0 0 12px;
+  font-size: clamp(32px, 6vw, 46px);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.subtitle {
+  color: var(--text);
+}
+
+.upload-card,
+.question-card {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.file-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-h);
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.input-mode {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--code-bg);
+}
+
+.upload-card .mode-option {
+  width: auto;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.upload-card .mode-option.selected {
+  border-color: var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  box-shadow: var(--shadow);
+}
+
+.upload-card .mode-option:disabled {
+  opacity: 0.7;
+}
+
+.upload-card input[type="file"] {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+}
+
+.material-text {
+  display: block;
+  width: 100%;
+  min-height: 220px;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.material-text::placeholder {
+  color: var(--text);
+  opacity: 0.75;
+}
+
+.file-help,
+.selected-file,
+.progress,
+.source {
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.selected-file {
+  overflow-wrap: anywhere;
+}
+
+.upload-card button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.upload-card button:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.upload-card button:focus-visible,
+.upload-card input:focus-visible,
+.material-text:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+.upload-card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.progress {
+  text-align: center;
+}
+
+.error-message {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 15px;
+}
+
+.questions {
+  margin-top: 40px;
+}
+
+.questions > h2 {
+  margin-bottom: 4px;
+}
+
+.questions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.question-count,
+.empty-questions {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.quiz-actions,
+.question-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quiz-actions button,
+.question-actions button {
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.quiz-actions .export-format {
+  min-width: 92px;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+  font-size: 14px;
+}
+
+.export-format:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 2px;
+}
+
+.export-format:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.quiz-actions button:focus-visible,
+.question-actions button:focus-visible,
+.question-editor input:focus-visible,
+.question-editor textarea:focus-visible,
+.question-editor select:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 2px;
+}
+
+.quiz-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.secondary-button {
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.question-actions .order-button {
+  background: var(--code-bg);
+  color: var(--text-h);
+}
+
+.question-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.quiz-actions .save-button,
+.question-actions .save-button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.question-actions .delete-button {
+  border-color: #fecaca;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.saved-message {
+  margin-bottom: 16px;
+  color: #166534;
+  font-size: 14px;
+}
+
+.question-card {
+  margin-bottom: 16px;
+}
+
+.question-card h3 {
+  margin: 0 0 16px;
+  color: var(--text-h);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.options {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--code-bg);
+}
+
+.options .correct-option {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.option-letter {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+
+.answer-label {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.explanation {
+  margin-top: 16px;
+}
+
+.source {
+  margin-bottom: 0;
+}
+
+.question-actions {
+  margin-top: 18px;
+}
+
+.question-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.question-editor > label,
+.option-field label {
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.question-editor input,
+.question-editor textarea,
+.question-editor select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+  font-size: 15px;
+}
+
+.question-editor textarea {
+  resize: vertical;
+}
+
+.option-editor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 4px 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.option-editor legend {
+  padding: 0 6px;
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.option-field {
+  display: grid;
+  gap: 6px;
+}
+
+.question-editor .question-actions {
+  margin-top: 6px;
+}
+
+@media (max-width: 560px) {
+  .app {
+    padding: 32px 16px 48px;
+  }
+
+  .upload-card,
+  .question-card {
+    padding: 18px;
+  }
+
+  .options li {
+    flex-wrap: wrap;
+  }
+
+  .questions-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .quiz-actions {
+    width: 100%;
+  }
+
+  .quiz-actions button {
+    flex: 1;
+  }
+
+  .quiz-actions .export-format {
+    flex: 1;
+  }
+
+  .option-editor {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  @page {
+    margin: 18mm;
+  }
+
+  :root {
+    color-scheme: light;
+    --bg: #fff;
+    --text: #222;
+    --text-h: #111;
+    --border: #ccc;
+    --code-bg: #f3f4f6;
+  }
+
+  body,
+  #root {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    border: 0;
+    display: block;
+    background: #fff;
+  }
+
+  .app {
+    width: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page-header,
+  .upload-card,
+  .questions-header,
+  .saved-message,
+  .question-actions {
+    display: none !important;
+  }
+
+  .questions {
+    margin: 0;
+  }
+
+  .questions::before {
+    display: block;
+    margin-bottom: 20px;
+    color: #111;
+    content: "Generated Quiz";
+    font-size: 24pt;
+    font-weight: 700;
+  }
+
+  .question-card {
+    break-inside: avoid;
+    margin-bottom: 14px;
+    padding: 16px;
+    border: 1px solid #ccc;
+    box-shadow: none;
+  }
+
+  .options .correct-option {
+    print-color-adjust: exact;
+  }
+}
