@@ -2,6 +2,13 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+PromptingStrategy = Literal[
+    "direct_prompting",
+    "zero_shot_prompting",
+    "few_shot_prompting",
+    "structured_shot_prompting",
+]
+
 
 class MCQQuestion(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
@@ -35,7 +42,7 @@ class MCQQuestion(BaseModel):
 class MCQSet(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
-    strategy: Literal["direct_prompting"]
+    strategy: PromptingStrategy
     questions: list[MCQQuestion] = Field(min_length=5, max_length=5)
 
     @model_validator(mode="after")

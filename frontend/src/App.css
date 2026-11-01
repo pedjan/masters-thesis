@@ -106,6 +106,104 @@
   resize: vertical;
 }
 
+.strategy-label {
+  margin-top: 20px;
+}
+
+.generation-text-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+}
+
+.generation-text-input:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+.generation-text-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.learning-outcomes {
+  min-width: 0;
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.learning-outcomes legend {
+  padding: 0;
+}
+
+.learning-outcomes .strategy-help {
+  margin: 0 0 10px;
+}
+
+.outcome-list {
+  display: grid;
+  gap: 8px;
+}
+
+.outcome-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.outcome-row .generation-text-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.upload-card .add-outcome-button,
+.upload-card .remove-outcome-button {
+  width: auto;
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 14px;
+}
+
+.upload-card .remove-outcome-button {
+  margin: 0;
+}
+
+.upload-card .add-outcome-button:hover:not(:disabled),
+.upload-card .remove-outcome-button:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.prompting-strategy {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+}
+
+.prompting-strategy:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
+.prompting-strategy:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .material-text::placeholder {
   color: var(--text);
   opacity: 0.75;
@@ -113,6 +211,7 @@
 
 .file-help,
 .selected-file,
+.strategy-help,
 .progress,
 .source {
   margin-top: 8px;
@@ -122,6 +221,10 @@
 
 .selected-file {
   overflow-wrap: anywhere;
+}
+
+.strategy-help {
+  margin-bottom: 0;
 }
 
 .upload-card button {

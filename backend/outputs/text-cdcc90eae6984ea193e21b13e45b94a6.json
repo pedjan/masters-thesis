@@ -1,0 +1,70 @@
+{
+  "strategy": "few_shot_prompting",
+  "questions": [
+    {
+      "id": 1,
+      "question": "What keyword is used to define a function in Python?",
+      "options": {
+        "A": "def",
+        "B": "func",
+        "C": "function",
+        "D": "make"
+      },
+      "correct_answer": "A",
+      "explanation": "The excerpt states that a function is defined with the def keyword.",
+      "source_concept": "Function definition"
+    },
+    {
+      "id": 2,
+      "question": "What are the values supplied in a call to a function called?",
+      "options": {
+        "A": "Parameters",
+        "B": "Arguments",
+        "C": "Variables",
+        "D": "Constants"
+      },
+      "correct_answer": "B",
+      "explanation": "The excerpt states that the values supplied in a call are arguments.",
+      "source_concept": "Parameters and arguments"
+    },
+    {
+      "id": 3,
+      "question": "What does Python return if a function ends without executing a return statement?",
+      "options": {
+        "A": "True",
+        "B": "False",
+        "C": "None",
+        "D": "Error"
+      },
+      "correct_answer": "C",
+      "explanation": "The excerpt states that if a function reaches the end of its body without executing a return statement, Python returns None.",
+      "source_concept": "Return statement behavior"
+    },
+    {
+      "id": 4,
+      "question": "Where can a local variable normally be read?",
+      "options": {
+        "A": "Outside the function",
+        "B": "Inside the function",
+        "C": "In the global scope",
+        "D": "Anywhere in the program"
+      },
+      "correct_answer": "B",
+      "explanation": "The excerpt states that a local variable cannot normally be read outside the function in which it was created.",
+      "source_concept": "Local variables"
+    },
+    {
+      "id": 5,
+      "question": "What is the rule for placing default parameter values in a function definition?",
+      "options": {
+        "A": "Before parameters without default values",
+        "B": "After parameters without default values",
+        "C": "At the beginning of the definition",
+        "D": "Randomly throughout the definition"
+      },
+      "correct_answer": "B",
+      "explanation": "The excerpt states that parameters with default values must come after parameters without default values in a function definition.",
+      "source_concept": "Default parameter ordering"
+    }
+  ]
+}

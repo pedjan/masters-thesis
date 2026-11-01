@@ -11,7 +11,7 @@ from docx import Document
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAIError
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError, field_validator
 from pypdf import PdfReader, errors as pdf_errors
 from docx.opc.exceptions import PackageNotFoundError
 
@@ -19,7 +19,7 @@ from backend.generator import (
     LLMConfigurationError,
     generate_questions,
 )
-from backend.models import MCQSet
+from backend.models import MCQSet, PromptingStrategy
 
 app = FastAPI()
 
@@ -38,7 +38,29 @@ OUTPUT_DIR = Path(__file__).resolve().parents[2] / "outputs"
 ALLOWED_EXTENSIONS = {".pdf", ".txt", ".doc", ".docx"}
 
 
-class TextMaterialRequest(BaseModel):
+class QuestionGenerationRequest(BaseModel):
+    lesson_title: str
+    learning_outcomes: list[str]
+    strategy: PromptingStrategy = "direct_prompting"
+
+    @field_validator("lesson_title")
+    @classmethod
+    def validate_lesson_title(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("Lesson title must not be empty.")
+        return value
+
+    @field_validator("learning_outcomes")
+    @classmethod
+    def validate_learning_outcomes(cls, values: list[str]) -> list[str]:
+        values = [value.strip() for value in values]
+        if not values or any(not value for value in values):
+            raise ValueError("Provide at least one non-empty learning outcome.")
+        return values
+
+
+class TextMaterialRequest(QuestionGenerationRequest):
     text: str
 
 
@@ -112,9 +134,16 @@ def _read_material(path: Path) -> str:
     return material
 
 
-def _generate_and_save(material: str, output_filename: str):
+def _generate_and_save(
+    material: str, output_filename: str, request: QuestionGenerationRequest
+):
     try:
-        questions: MCQSet = generate_questions(material)
+        questions: MCQSet = generate_questions(
+            material,
+            request.lesson_title,
+            request.learning_outcomes,
+            request.strategy,
+        )
     except LLMConfigurationError as error:
         raise HTTPException(status_code=503, detail=str(error)) from error
     except (OpenAIError, ConnectionError) as error:
@@ -166,8 +195,9 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 @app.post("/generate/{stored_filename}")
-def generate_file_questions(stored_filename: str):
-
+def generate_file_questions(
+    stored_filename: str, request: QuestionGenerationRequest
+):
 
     material_path = UPLOAD_DIR / stored_filename
     if not material_path.is_file():
@@ -187,7 +217,7 @@ def generate_file_questions(stored_filename: str):
         raise HTTPException(status_code=422, detail=str(error)) from error
 
     output_filename = f"{Path(stored_filename).stem}.json"
-    return _generate_and_save(material, output_filename)
+    return _generate_and_save(material, output_filename, request)
 
 
 @app.post("/generate-text")
@@ -199,4 +229,4 @@ def generate_text_questions(request: TextMaterialRequest):
         )
 
     output_filename = f"text-{uuid4().hex}.json"
-    return _generate_and_save(request.text, output_filename)
+    return _generate_and_save(request.text, output_filename, request)

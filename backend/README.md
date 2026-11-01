@@ -23,6 +23,12 @@ returned in the response.
 
 Alternatively, send `POST /generate-text` with a JSON body containing a
 `text` field to generate questions directly from pasted teaching material.
+Both generation endpoints require `lesson_title` and a non-empty
+`learning_outcomes` array in the JSON body, and accept a prompting strategy.
+For pasted text, include `text` in the body; for uploaded files, send the
+context body to `POST /generate/{stored_filename}`.
+Supported values are `direct_prompting` (the default), `zero_shot_prompting`,
+`few_shot_prompting`, and `structured_shot_prompting`.
 The generated JSON is also saved in `outputs/` and returned in the response.
 
 PDF, TXT, and DOCX text is extracted by the backend. Generating questions

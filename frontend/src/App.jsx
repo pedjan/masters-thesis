@@ -4,6 +4,28 @@ import "./App.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 const ACCEPTED_EXTENSIONS = [".pdf", ".txt", ".doc", ".docx"];
+const PROMPTING_OPTIONS = [
+  {
+    value: "direct_prompting",
+    label: "Direct-shot prompting",
+    description: "Give the task directly, without worked examples.",
+  },
+  {
+    value: "zero_shot_prompting",
+    label: "Zero-shot prompting",
+    description: "Generate questions from instructions and your material only.",
+  },
+  {
+    value: "few_shot_prompting",
+    label: "Few-shot prompting",
+    description: "Use a sample question to demonstrate the desired style.",
+  },
+  {
+    value: "structured_shot_prompting",
+    label: "Structured-shot prompting",
+    description: "Use a structured workflow to plan and check the questions.",
+  },
+];
 
 async function readApiResponse(response) {
   const body = await response.text();
@@ -29,10 +51,13 @@ function App() {
   const [inputMode, setInputMode] = useState("file");
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
+  const [lessonTitle, setLessonTitle] = useState("");
+  const [learningOutcomes, setLearningOutcomes] = useState([""]);
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [questions, setQuestions] = useState([]);
   const [strategy, setStrategy] = useState("direct_prompting");
+  const [selectedStrategy, setSelectedStrategy] = useState("direct_prompting");
   const [editingId, setEditingId] = useState(null);
   const [draft, setDraft] = useState(null);
   const [isNewQuestion, setIsNewQuestion] = useState(false);
@@ -62,6 +87,19 @@ function App() {
     event.preventDefault();
     if (busy) return;
 
+    if (!lessonTitle.trim()) {
+      setError("Enter a lesson title before generating questions.");
+      return;
+    }
+
+    if (
+      learningOutcomes.length === 0 ||
+      learningOutcomes.some((outcome) => !outcome.trim())
+    ) {
+      setError("Enter at least one non-empty learning outcome.");
+      return;
+    }
+
     if (inputMode === "text" && !text.trim()) {
       setError("Enter some teaching material before generating questions.");
       return;
@@ -79,6 +117,11 @@ function App() {
 
     setError("");
     clearQuestionState();
+    const generationContext = {
+      lesson_title: lessonTitle.trim(),
+      learning_outcomes: learningOutcomes.map((outcome) => outcome.trim()),
+      strategy: selectedStrategy,
+    };
 
     try {
       let generationResponse;
@@ -87,7 +130,7 @@ function App() {
         generationResponse = await fetch(`${API_URL}/generate-text`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ ...generationContext, text }),
         });
       } else {
         setBusy("uploading");
@@ -107,7 +150,11 @@ function App() {
         setBusy("generating");
         generationResponse = await fetch(
           `${API_URL}/generate/${encodeURIComponent(upload.stored_as)}`,
-          { method: "POST" },
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(generationContext),
+          },
         );
       }
 
@@ -118,7 +165,7 @@ function App() {
       }
 
       setQuestions(result.questions);
-      setStrategy(result.strategy || "direct_prompting");
+      setStrategy(result.strategy || selectedStrategy);
       setHasGenerated(true);
     } catch (requestError) {
       console.error(requestError);
@@ -420,6 +467,113 @@ function App() {
             {file && <p className="selected-file">Selected: {file.name}</p>}
           </>
         )}
+
+        <label className="file-label strategy-label" htmlFor="lesson-title">
+          Lesson title <span aria-hidden="true">*</span>
+        </label>
+        <input
+          id="lesson-title"
+          className="generation-text-input"
+          type="text"
+          value={lessonTitle}
+          onChange={(event) => {
+            setLessonTitle(event.target.value);
+            setError("");
+            clearQuestionState();
+          }}
+          placeholder="e.g. Introduction to cell biology"
+          required
+          disabled={Boolean(busy)}
+        />
+
+        <fieldset className="learning-outcomes">
+          <legend className="file-label">
+            Learning outcomes <span aria-hidden="true">*</span>
+          </legend>
+          <p className="strategy-help">
+            Add at least one outcome; questions will be aligned with these goals.
+          </p>
+          <div className="outcome-list">
+            {learningOutcomes.map((outcome, index) => (
+              <div className="outcome-row" key={index}>
+                <label className="visually-hidden" htmlFor={`learning-outcome-${index}`}>
+                  Learning outcome {index + 1}
+                </label>
+                <input
+                  id={`learning-outcome-${index}`}
+                  className="generation-text-input"
+                  type="text"
+                  value={outcome}
+                  onChange={(event) => {
+                    setLearningOutcomes((current) =>
+                      current.map((value, outcomeIndex) =>
+                        outcomeIndex === index ? event.target.value : value,
+                      ),
+                    );
+                    setError("");
+                    clearQuestionState();
+                  }}
+                  placeholder={`Learning outcome ${index + 1}`}
+                  required
+                  disabled={Boolean(busy)}
+                />
+                {learningOutcomes.length > 1 && (
+                  <button
+                    className="remove-outcome-button"
+                    type="button"
+                    onClick={() => {
+                      setLearningOutcomes((current) =>
+                        current.filter((_, outcomeIndex) => outcomeIndex !== index),
+                      );
+                      setError("");
+                      clearQuestionState();
+                    }}
+                    disabled={Boolean(busy)}
+                    aria-label={`Remove learning outcome ${index + 1}`}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          <button
+            className="add-outcome-button"
+            type="button"
+            onClick={() => {
+              setLearningOutcomes((current) => [...current, ""]);
+              setError("");
+              clearQuestionState();
+            }}
+            disabled={Boolean(busy)}
+          >
+            Add learning outcome
+          </button>
+        </fieldset>
+
+        <label className="file-label strategy-label" htmlFor="prompting-strategy">
+          Prompting option
+        </label>
+        <select
+          id="prompting-strategy"
+          className="prompting-strategy"
+          value={selectedStrategy}
+          onChange={(event) => {
+            setSelectedStrategy(event.target.value);
+            setError("");
+            clearQuestionState();
+          }}
+          disabled={Boolean(busy)}
+        >
+          {PROMPTING_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <p className="strategy-help">
+          {PROMPTING_OPTIONS.find((option) => option.value === selectedStrategy)?.description}
+        </p>
 
         <button
           type="submit"
