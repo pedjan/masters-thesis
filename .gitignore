@@ -9,6 +9,9 @@ backend/*.egg-info
 # Virtual environments
 backend/.venv
 
+# Uploads
+backend/outputs/
+
 # Uploaded user files
 frontend/uploads/
 frontend/outputs/
