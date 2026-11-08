@@ -47,7 +47,6 @@ frontend/*.sw?
 
 
 prototype/.env
-prototype/.env.example
 prototype/.venv/
 prototype/__pycache__/
 prototype/*.py[cod]
