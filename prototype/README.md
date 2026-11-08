@@ -1,26 +1,19 @@
-# masters-thesis
+# Prototip za master rad
 
-Prototype for the master's thesis **Comparative analysis of approaches for
-automatic generation of educational content using large language models**.
+Ovoo je prototip za veb aplikaciju za master rad na temu **Projektovanje i evaluacija sistema za automatsko generisanje pitanja za proveru znanja primenom velikih jezickih modela**
 
-## What it doess
+## Šta radi?
 
-The prototype loads material from `materials`, generates exactly five
-multiple-choice questions using the `direct_prompting` strategy, saves them to
-`outputs/direct_prompting.json`, and validates the saved JSON against the
-Pydantic schema in `src/models.py`. By default it uses a local model served by
-LM Studio. Ollama and OpenAI are also available as configurable providers.
+Protitip učitava materijal iz `materials`, generiše tačno pet MCQ korišćenjem `direct_prompting` strategije, čuva ih u
+`outputs/direct_prompting.json`, i validira sačuvaj JSON po Pzdantic šemi u `src/models.py`. Podrazumevno koristi lokalni model preko LM Studija. Ollama i OpenAI su dostupni za konfigurisanje.
 
-Each question must have a non-empty question, four distinct options named
-`A`–`D`, one correct-answer label, an explanation, and a source concept. The
-top-level object must contain the `direct_prompting` strategy and exactly five
-questions. Structural validation does not independently verify the factual
-correctness of the generated answers.
+
+Svako pitanje mora da bude neprazno, sa četiri ponuđena odgovore od kojih je samo jedan tačan. Postoji pet takvih pitanja. Trenutna strukturna validacija ne garantuje tačnost generisanih pitanja.
+
 
 ## Setup
 
-From the repository root, create and activate a virtual environment, then
-install the dependencies:
+Pokretanje:
 
 ```powershell
 python -m venv .venv
@@ -28,15 +21,10 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-Install [LM Studio](https://lmstudio.ai/) and download a compatible model from
-its Discover tab. Load that model in the Chat or Developer tab, then start the
-local server from the Developer tab. The configured server address is
-`http://localhost:1235`.
+Instalirati i podesiti [LM Studio](https://lmstudio.ai/), ubaciti željeni model i pokrenuti lokalni server.
 
-Make the `.env` file, edit it rather than replacing it. Set
-`LLM_PROVIDER=lm_studio`, set `LM_STUDIO_BASE_URL` to your LM Studio server
-address, and set `LM_STUDIO_MODEL` to the model identifier shown by LM Studio's
-server. For example:
+
+Napravtiti `.env` fajl, u njega ubaciti primer:
 
 ```text
 LLM_PROVIDER=lm_studio
@@ -44,19 +32,14 @@ LM_STUDIO_BASE_URL=http://localhost:1235/v1
 LM_STUDIO_MODEL=qwen/qwen3.5-9b
 ```
 
-No OpenAI API key or API credits are needed for local generation. If API
-authentication is enabled in LM Studio, set `LM_STUDIO_API_KEY` as well.
 
-For Ollama, set `LLM_PROVIDER=ollama`; for OpenAI, set
-`LLM_PROVIDER=openai` and provide `OPENAI_API_KEY` (`OPENAI_MODEL` defaults to
-`gpt-4o-mini`). Do not commit `.env` or share API keys.
+Moguće je i iskorisiti neki drugi llm koji nije lokalni samo je potrebno ubaciti API ključ. Primeri su u [.env.example](./.env.example)
 
 
-## Run
+## Pokretanje
 
 ```powershell
 python src\main.py
 ```
 
-The generated file is `outputs/direct_prompting.json`. The program validates
-the response before saving and validates the saved JSON again afterward.
+Generisani fajlovi se nalaze u `outputs/direct_prompting.json`. Program validira generisani rezultat pre čuvanja.

@@ -12,7 +12,7 @@ from backend.validation import (
 
 def question_set(stems: list[str]) -> MCQSet:
     return MCQSet(
-        strategy="direct_prompting",
+        strategy="zero_shot_prompting",
         questions=[
             MCQQuestion(
                 id=question_id,

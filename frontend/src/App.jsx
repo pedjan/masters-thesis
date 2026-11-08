@@ -6,11 +6,6 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 const ACCEPTED_EXTENSIONS = [".pdf", ".txt", ".doc", ".docx"];
 const PROMPTING_OPTIONS = [
   {
-    value: "direct_prompting",
-    label: "Direct-shot prompting",
-    description: "Give the task directly, without worked examples.",
-  },
-  {
     value: "zero_shot_prompting",
     label: "Zero-shot prompting",
     description: "Generate questions from instructions and your material only.",
@@ -58,8 +53,8 @@ function App() {
   const [questions, setQuestions] = useState([]);
   const [validation, setValidation] = useState(null);
   const [generationId, setGenerationId] = useState(null);
-  const [strategy, setStrategy] = useState("direct_prompting");
-  const [selectedStrategy, setSelectedStrategy] = useState("direct_prompting");
+  const [strategy, setStrategy] = useState("zero_shot_prompting");
+  const [selectedStrategy, setSelectedStrategy] = useState("zero_shot_prompting");
   const [editingId, setEditingId] = useState(null);
   const [draft, setDraft] = useState(null);
   const [isNewQuestion, setIsNewQuestion] = useState(false);

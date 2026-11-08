@@ -3,7 +3,6 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 PromptingStrategy = Literal[
-    "direct_prompting",
     "zero_shot_prompting",
     "few_shot_prompting",
     "structured_shot_prompting",

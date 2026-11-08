@@ -58,7 +58,7 @@ ALLOWED_EXTENSIONS = {".pdf", ".txt", ".doc", ".docx"}
 class QuestionGenerationRequest(BaseModel):
     lesson_title: str
     learning_outcomes: list[str]
-    strategy: PromptingStrategy = "direct_prompting"
+    strategy: PromptingStrategy = "zero_shot_prompting"
     source_filename: str | None = Field(default=None, max_length=255)
 
     @field_validator("lesson_title")
@@ -311,7 +311,7 @@ def generate_text_questions(request: TextMaterialRequest):
 
 @app.post("/evaluations/{generation_id}")
 def submit_quality_evaluation(
-    generation_id: str, request: QualityEvaluationRequest
+    generation_id: int, request: QualityEvaluationRequest
 ):
     try:
         evaluation = save_evaluation(
@@ -331,7 +331,7 @@ def submit_quality_evaluation(
 
 
 @app.get("/evaluations/{generation_id}")
-def list_quality_evaluations(generation_id: str):
+def list_quality_evaluations(generation_id: int):
     try:
         if not generation_exists(generation_id):
             raise HTTPException(status_code=404, detail="Question set was not found.")
