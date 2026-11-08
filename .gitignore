@@ -52,3 +52,5 @@ prototype/.venv/
 prototype/__pycache__/
 prototype/*.py[cod]
 prototype/outputs/*.json
+prototype/.vscode/
+prototype/src/__pycache__/
