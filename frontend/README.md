@@ -19,6 +19,15 @@ For PDF, choose PDF and save from the browser's print dialog. The backend URL
 defaults to `http://localhost:8080`; set `VITE_API_URL` when using a different
 URL.
 
+Generated material, strategy, and questions are stored by the backend in
+SQLite. After generation, the **Evaluate question quality** form submits a
+0-100 quality score and written feedback, which can be retrieved through the
+backend API.
+
+Generated question sets also show structural, material-feasibility, and
+duplicate-question validation findings. The LLM feasibility check requires an
+additional configured-model call for each generated set.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:

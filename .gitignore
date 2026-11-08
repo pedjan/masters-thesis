@@ -5,12 +5,15 @@ backend/build/
 backend/dist/
 backend/wheels/
 backend/*.egg-info
+backend/*.sqlite3*
+backend/tests/__pycache__/
 
 # Virtual environments
 backend/.venv
 
 # Uploads
 backend/outputs/
+backend/materials/
 
 # Uploaded user files
 frontend/uploads/

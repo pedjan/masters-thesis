@@ -1,8 +1,10 @@
+from contextlib import asynccontextmanager
 import json
 import os
 from pathlib import Path
 import re
 import shutil
+import sqlite3
 import subprocess
 from tempfile import TemporaryDirectory
 from uuid import uuid4
@@ -11,7 +13,7 @@ from docx import Document
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAIError
-from pydantic import BaseModel, ValidationError, field_validator
+from pydantic import BaseModel, Field, ValidationError, field_validator
 from pypdf import PdfReader, errors as pdf_errors
 from docx.opc.exceptions import PackageNotFoundError
 
@@ -19,9 +21,24 @@ from backend.generator import (
     LLMConfigurationError,
     generate_questions,
 )
+from backend.database import (
+    generation_exists,
+    get_evaluations,
+    initialize_database,
+    save_evaluation,
+    save_generation,
+)
 from backend.models import MCQSet, PromptingStrategy
+from backend.validation import validate_generated_questions
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    initialize_database()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,6 +59,7 @@ class QuestionGenerationRequest(BaseModel):
     lesson_title: str
     learning_outcomes: list[str]
     strategy: PromptingStrategy = "direct_prompting"
+    source_filename: str | None = Field(default=None, max_length=255)
 
     @field_validator("lesson_title")
     @classmethod
@@ -62,6 +80,28 @@ class QuestionGenerationRequest(BaseModel):
 
 class TextMaterialRequest(QuestionGenerationRequest):
     text: str
+
+
+class QualityEvaluationRequest(BaseModel):
+    score: float = Field(ge=0, le=100, allow_inf_nan=False)
+    feedback: str = Field(min_length=1)
+    evaluator: str | None = Field(default=None, max_length=255)
+
+    @field_validator("feedback")
+    @classmethod
+    def validate_feedback(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("Feedback must not be empty.")
+        return value
+
+    @field_validator("evaluator")
+    @classmethod
+    def validate_evaluator(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        return value or None
 
 
 def _read_material(path: Path) -> str:
@@ -135,7 +175,9 @@ def _read_material(path: Path) -> str:
 
 
 def _generate_and_save(
-    material: str, output_filename: str, request: QuestionGenerationRequest
+    material: str,
+    output_filename: str,
+    request: QuestionGenerationRequest,
 ):
     try:
         questions: MCQSet = generate_questions(
@@ -154,12 +196,47 @@ def _generate_and_save(
             detail=f"Question generation returned invalid data: {error}",
         ) from error
 
+    try:
+        validation = validate_generated_questions(material, questions)
+    except (OpenAIError, ConnectionError) as error:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Question validation could not reach the LLM: {error}",
+        ) from error
+    except LLMConfigurationError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
+    except (json.JSONDecodeError, ValidationError, ValueError) as error:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Question validation returned invalid data: {error}",
+        ) from error
+
+    try:
+        question_set_id = save_generation(
+            material,
+            request.source_filename,
+            request.lesson_title,
+            request.learning_outcomes,
+            questions,
+            validation,
+        )
+    except sqlite3.Error as error:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Could not save generated questions to the database: {error}",
+        ) from error
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUTPUT_DIR / output_filename).write_text(
         questions.model_dump_json(indent=2),
         encoding="utf-8",
     )
-    return {"saved_as": output_filename, **questions.model_dump()}
+    return {
+        "generation_id": question_set_id,
+        "saved_as": output_filename,
+        "validation": validation,
+        **questions.model_dump(),
+    }
 
 
 @app.get("/")
@@ -230,3 +307,37 @@ def generate_text_questions(request: TextMaterialRequest):
 
     output_filename = f"text-{uuid4().hex}.json"
     return _generate_and_save(request.text, output_filename, request)
+
+
+@app.post("/evaluations/{generation_id}")
+def submit_quality_evaluation(
+    generation_id: str, request: QualityEvaluationRequest
+):
+    try:
+        evaluation = save_evaluation(
+            generation_id,
+            request.score,
+            request.feedback,
+            request.evaluator,
+        )
+    except sqlite3.Error as error:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Could not save evaluation to the database: {error}",
+        ) from error
+    if evaluation is None:
+        raise HTTPException(status_code=404, detail="Question set was not found.")
+    return evaluation
+
+
+@app.get("/evaluations/{generation_id}")
+def list_quality_evaluations(generation_id: str):
+    try:
+        if not generation_exists(generation_id):
+            raise HTTPException(status_code=404, detail="Question set was not found.")
+        return {"evaluations": get_evaluations(generation_id)}
+    except sqlite3.Error as error:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Could not read evaluations from the database: {error}",
+        ) from error

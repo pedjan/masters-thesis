@@ -56,6 +56,8 @@ function App() {
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [questions, setQuestions] = useState([]);
+  const [validation, setValidation] = useState(null);
+  const [generationId, setGenerationId] = useState(null);
   const [strategy, setStrategy] = useState("direct_prompting");
   const [selectedStrategy, setSelectedStrategy] = useState("direct_prompting");
   const [editingId, setEditingId] = useState(null);
@@ -65,6 +67,12 @@ function App() {
   const [savedMessage, setSavedMessage] = useState("");
   const [hasGenerated, setHasGenerated] = useState(false);
   const [exportFormat, setExportFormat] = useState("json");
+  const [evaluationScore, setEvaluationScore] = useState("");
+  const [evaluationFeedback, setEvaluationFeedback] = useState("");
+  const [evaluationEvaluator, setEvaluationEvaluator] = useState("");
+  const [evaluations, setEvaluations] = useState([]);
+  const [evaluationBusy, setEvaluationBusy] = useState(false);
+  const [evaluationError, setEvaluationError] = useState("");
   const newQuestionInputRef = useRef(null);
 
   useEffect(() => {
@@ -75,6 +83,12 @@ function App() {
 
   const clearQuestionState = () => {
     setQuestions([]);
+    setValidation(null);
+    setGenerationId(null);
+    setEvaluations([]);
+    setEvaluationError("");
+    setEvaluationScore("");
+    setEvaluationFeedback("");
     setEditingId(null);
     setDraft(null);
     setIsNewQuestion(false);
@@ -121,6 +135,7 @@ function App() {
       lesson_title: lessonTitle.trim(),
       learning_outcomes: learningOutcomes.map((outcome) => outcome.trim()),
       strategy: selectedStrategy,
+      source_filename: inputMode === "file" ? file.name : null,
     };
 
     try {
@@ -163,8 +178,16 @@ function App() {
       if (!Array.isArray(result.questions)) {
         throw new Error("The backend did not return any generated questions.");
       }
+      if (!result.generation_id) {
+        throw new Error("The backend did not save the generated questions.");
+      }
+      if (!result.validation) {
+        throw new Error("The backend did not validate the generated questions.");
+      }
 
       setQuestions(result.questions);
+      setValidation(result.validation);
+      setGenerationId(result.generation_id);
       setStrategy(result.strategy || selectedStrategy);
       setHasGenerated(true);
     } catch (requestError) {
@@ -292,6 +315,34 @@ function App() {
       })),
     );
     setSavedMessage("");
+  };
+
+  const submitEvaluation = async (event) => {
+    event.preventDefault();
+    if (!generationId || evaluationBusy) return;
+
+    setEvaluationError("");
+    setEvaluationBusy(true);
+    try {
+      const response = await fetch(`${API_URL}/evaluations/${generationId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          score: Number(evaluationScore),
+          feedback: evaluationFeedback,
+          evaluator: evaluationEvaluator,
+        }),
+      });
+      const evaluation = await readApiResponse(response);
+      setEvaluations((current) => [...current, evaluation]);
+      setEvaluationScore("");
+      setEvaluationFeedback("");
+    } catch (requestError) {
+      console.error(requestError);
+      setEvaluationError(requestError.message || "Could not save evaluation.");
+    } finally {
+      setEvaluationBusy(false);
+    }
   };
 
   const downloadFile = (contents, mimeType, filename) => {
@@ -647,6 +698,60 @@ function App() {
               </select>
             </div>
           </div>
+          <h1 className="print-title">{lessonTitle}</h1>
+          {validation && (
+            <section
+              className={`validation-panel ${validation.status}`}
+              aria-labelledby="validation-heading"
+              role="status"
+            >
+              <h3 id="validation-heading">
+                Automatic verification: {validation.status.replaceAll("_", " ")}
+              </h3>
+              <p>
+                Structure: {validation.structure.status} (
+                {validation.structure.question_count} questions).
+              </p>
+              {validation.feasibility.findings.length > 0 && (
+                <div>
+                  <strong>Feasibility findings</strong>
+                  <ul>
+                    {validation.feasibility.findings.map((finding) => (
+                      <li key={finding.question_id}>
+                        Question {finding.question_id}: {finding.feedback}
+                        {!finding.answerable_from_material
+                          ? " Not answerable from the supplied material."
+                          : ""}
+                        {!finding.correct_answer_supported
+                          ? " Correct answer not supported by the material."
+                          : ""}
+                        {!finding.exactly_one_correct_option
+                          ? " It may not have exactly one correct option."
+                          : ""}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {validation.duplicates.pairs.length > 0 && (
+                <div>
+                  <strong>Potential duplicate questions</strong>
+                  <ul>
+                    {validation.duplicates.pairs.map((pair) => (
+                      <li key={pair.question_ids.join("-")}>
+                        Questions {pair.question_ids.join(" and ")} (
+                        {pair.identical ? "identical" : "similar"}, similarity{" "}
+                        {Math.round(pair.similarity * 100)}%).
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {validation.status === "passed" && (
+                <p>No feasibility issues or duplicate questions were detected.</p>
+              )}
+            </section>
+          )}
           {savedMessage && (
             <p className="saved-message" role="status">{savedMessage}</p>
           )}
@@ -804,6 +909,52 @@ function App() {
               Save or cancel the current question before saving the quiz.
             </p>
           )}
+          <section className="evaluation-panel" aria-labelledby="evaluation-heading">
+            <h3 id="evaluation-heading">Evaluate question quality</h3>
+            <form className="evaluation-form" onSubmit={submitEvaluation}>
+              <label htmlFor="evaluation-evaluator">Evaluator (optional)</label>
+              <input
+                id="evaluation-evaluator"
+                value={evaluationEvaluator}
+                onChange={(event) => setEvaluationEvaluator(event.target.value)}
+                maxLength={255}
+              />
+              <label htmlFor="evaluation-score">Quality score (0–100)</label>
+              <input
+                id="evaluation-score"
+                type="number"
+                min="0"
+                max="100"
+                step="0.1"
+                value={evaluationScore}
+                onChange={(event) => setEvaluationScore(event.target.value)}
+                required
+              />
+              <label htmlFor="evaluation-feedback">Feedback</label>
+              <textarea
+                id="evaluation-feedback"
+                value={evaluationFeedback}
+                onChange={(event) => setEvaluationFeedback(event.target.value)}
+                rows={3}
+                required
+              />
+              {evaluationError && (
+                <p className="error-message" role="alert">{evaluationError}</p>
+              )}
+              <button type="submit" disabled={evaluationBusy || editingId !== null}>
+                {evaluationBusy ? "Saving evaluation..." : "Save evaluation"}
+              </button>
+            </form>
+            {evaluations.map((evaluation) => (
+              <article className="saved-evaluation" key={evaluation.id}>
+                <p>
+                  Score: {evaluation.score}/100
+                  {evaluation.evaluator ? ` — ${evaluation.evaluator}` : ""}
+                </p>
+                <p>{evaluation.feedback}</p>
+              </article>
+            ))}
+          </section>
         </section>
       )}
     </main>

@@ -30,6 +30,34 @@ context body to `POST /generate/{stored_filename}`.
 Supported values are `direct_prompting` (the default), `zero_shot_prompting`,
 `few_shot_prompting`, and `structured_shot_prompting`.
 The generated JSON is also saved in `outputs/` and returned in the response.
+Each successful generation is also saved in SQLite, including the extracted
+teaching material, lesson title, learning outcomes, selected strategy, and all
+generated question fields. The response includes a `generation_id` for linking
+quality evaluations. By default, the database is `backend/app.sqlite3`; set
+`DATABASE_PATH` to choose another location.
+
+Generated question sets are also structurally validated, checked by the
+configured LLM for answerability and support in the teaching material, and
+compared for identical or highly similar question wording. Validation findings
+are returned with the generated set and stored in SQLite. Duplicate and
+feasibility findings are reported for review; they do not automatically discard
+the question set. Similarity scores of 85% or higher are flagged as potential
+duplicates.
+
+Submit an evaluator's quality score (0-100) and feedback with
+`POST /evaluations/{generation_id}`. An optional `evaluator` name can also be
+included:
+
+```json
+{
+  "score": 87.5,
+  "feedback": "Questions align well with the learning outcomes.",
+  "evaluator": "Reviewer"
+}
+```
+
+Retrieve saved evaluation results with `GET /evaluations/{generation_id}`.
+The API stores submitted evaluations; it does not calculate quality scores.
 
 PDF, TXT, and DOCX text is extracted by the backend. Generating questions
 from legacy DOC files requires LibreOffice to be installed; if its executable

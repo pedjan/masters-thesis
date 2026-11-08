@@ -395,6 +395,85 @@
   margin-bottom: 16px;
 }
 
+.evaluation-panel {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.evaluation-panel h3 {
+  margin: 0 0 16px;
+  color: var(--text-h);
+}
+
+.evaluation-form {
+  display: grid;
+  gap: 10px;
+}
+
+.evaluation-form label {
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.evaluation-form input,
+.evaluation-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+}
+
+.saved-evaluation {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.saved-evaluation p {
+  margin: 4px 0;
+}
+
+.print-title {
+  display: none;
+}
+
+.validation-panel {
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--code-bg);
+  font-size: 15px;
+}
+
+.validation-panel h3 {
+  margin: 0 0 8px;
+  color: var(--text-h);
+  font-size: 17px;
+  text-transform: capitalize;
+}
+
+.validation-panel p {
+  margin: 6px 0;
+}
+
+.validation-panel ul {
+  margin: 6px 0 12px;
+  padding-left: 22px;
+}
+
+.validation-panel li {
+  margin-top: 4px;
+}
+
 .question-card h3 {
   margin: 0 0 16px;
   color: var(--text-h);
@@ -542,7 +621,7 @@
 
 @media print {
   @page {
-    margin: 18mm;
+    margin: 0;
   }
 
   :root {
@@ -567,12 +646,14 @@
   .app {
     width: auto;
     margin: 0;
-    padding: 0;
+    padding: 18mm;
   }
 
   .page-header,
   .upload-card,
   .questions-header,
+  .evaluation-panel,
+  .validation-panel,
   .saved-message,
   .question-actions {
     display: none !important;
@@ -582,13 +663,12 @@
     margin: 0;
   }
 
-  .questions::before {
+  .print-title {
     display: block;
-    margin-bottom: 20px;
+    margin: 0 0 20px;
     color: #111;
-    content: "Generated Quiz";
     font-size: 24pt;
-    font-weight: 700;
+    line-height: 1.2;
   }
 
   .question-card {
@@ -599,7 +679,14 @@
     box-shadow: none;
   }
 
+  .answer-label,
+  .explanation,
+  .source {
+    display: none !important;
+  }
+
   .options .correct-option {
-    print-color-adjust: exact;
+    background: var(--code-bg);
+    color: inherit;
   }
 }
