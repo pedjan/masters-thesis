@@ -4,21 +4,205 @@ import "./App.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 const ACCEPTED_EXTENSIONS = [".pdf", ".txt", ".doc", ".docx"];
+const TRANSLATIONS = {
+  en: {
+    pageTitle: "Test generator",
+    studyTool: "Study tool",
+    heading: "Generate a test from your material",
+    subtitle: "Enter text or upload a document to get five multiple-choice questions.",
+    language: "Language",
+    chooseSource: "Choose material source",
+    writeText: "Write or paste text",
+    uploadFile: "Upload a file",
+    teachingMaterial: "Teaching material",
+    textPlaceholder: "Paste or type the text you want to use for your test...",
+    fileTypes: "PDF, TXT, DOC, or DOCX",
+    selectedFile: "Selected: {filename}",
+    lessonTitle: "Lesson title",
+    lessonPlaceholder: "e.g. Introduction to cell biology",
+    learningOutcomes: "Learning outcomes",
+    addOutcomeHelp: "Add at least one outcome; questions will be aligned with these goals.",
+    learningOutcome: "Learning outcome {number}",
+    remove: "Remove",
+    addOutcome: "Add learning outcome",
+    promptingOption: "Prompting option",
+    zeroShot: "Zero-shot prompting",
+    zeroShotDescription: "Generate questions from instructions and your material only.",
+    fewShot: "Few-shot prompting",
+    fewShotDescription: "Use a sample question to demonstrate the desired style.",
+    structuredShot: "Structured-shot prompting",
+    structuredShotDescription: "Use a structured workflow to plan and check the questions.",
+    uploading: "Uploading...",
+    generating: "Generating questions...",
+    uploadAndGenerate: "Upload and generate",
+    generateQuestions: "Generate questions",
+    uploadingFile: "Uploading your file...",
+    creatingQuestions: "Creating questions. This may take a little while...",
+    yourQuestions: "Your questions",
+    questionCount: "{count} questions",
+    addQuestion: "Add question",
+    saveQuiz: "Save test (.{format})",
+    quizFormat: "Test file format",
+    automaticVerification: "Automatic verification: {status}",
+    structure: "Structure",
+    feasibilityFindings: "Feasibility findings",
+    questionNumber: "Question {number}:",
+    notAnswerable: " Not answerable from the supplied material.",
+    unsupportedAnswer: " Correct answer not supported by the material.",
+    notExactlyOne: " It may not have exactly one correct option.",
+    potentialDuplicates: "Potential duplicate questions",
+    questions: "Questions",
+    and: "and",
+    identical: "identical",
+    similar: "similar",
+    similarity: "similarity",
+    noIssues: "No feasibility issues or duplicate questions were detected.",
+    noQuestions: "No questions yet. Add a question to build your test.",
+    question: "Question",
+    answerOptions: "Answer options",
+    option: "Option {letter}",
+    correctAnswer: "Correct answer",
+    explanation: "Explanation",
+    sourceConcept: "Source concept",
+    saveChanges: "Save changes",
+    cancel: "Cancel",
+    concept: "Concept",
+    moveQuestionUp: "Move question {number} up",
+    moveQuestionDown: "Move question {number} down",
+    moveUp: "Move up",
+    moveDown: "Move down",
+    edit: "Edit",
+    delete: "Delete",
+    saveOrCancel: "Save or cancel the current question before saving the quiz.",
+    evaluateQuality: "Evaluate question quality",
+    evaluatorOptional: "Evaluator (optional)",
+    qualityScore: "Quality score (0–100)",
+    feedback: "Feedback",
+    savingEvaluation: "Saving evaluation...",
+    saveEvaluation: "Save evaluation",
+    score: "Score",
+    enterLessonTitle: "Enter a lesson title before generating questions.",
+    enterOutcome: "Enter at least one non-empty learning outcome.",
+    enterMaterial: "Enter some teaching material before generating questions.",
+    chooseValidFile: "Choose a PDF, TXT, DOC, or DOCX file.",
+    requestFailed: "Could not complete the backend request.",
+    fillQuestion: "Fill in the question, all four options, explanation, and concept.",
+    distinctOptions: "Each answer option must be different.",
+    downloaded: "Your edited quiz was downloaded as {filename}.",
+    saveAsPdf: "In the print dialog, choose Save as PDF to download your quiz.",
+    saveQuizError: "Could not save the quiz.",
+    saveEvaluationError: "Could not save evaluation.",
+    passed: "passed",
+    review_required: "review required",
+    potential_duplicates: "potential duplicates",
+  },
+  sr: {
+    pageTitle: "Generator testova",
+    studyTool: "Alat za učenje",
+    heading: "Generiši test od svog materijala",
+    subtitle: "Unesite tekst ili otpremite dokument da biste dobili pet pitanja sa višestrukim izborom.",
+    language: "Jezik",
+    chooseSource: "Izaberite izvor materijala",
+    writeText: "Unesite ili nalepite tekst",
+    uploadFile: "Otpremite datoteku",
+    teachingMaterial: "Nastavni materijal",
+    textPlaceholder: "Nalepite ili unesite tekst koji želite da koristite za test...",
+    fileTypes: "PDF, TXT, DOC ili DOCX",
+    selectedFile: "Izabrano: {filename}",
+    lessonTitle: "Naslov lekcije",
+    lessonPlaceholder: "npr. Uvod u ćelijsku biologiju",
+    learningOutcomes: "Ishodi učenja",
+    addOutcomeHelp: "Dodajte bar jedan ishod; pitanja će biti usklađena sa ovim ciljevima.",
+    learningOutcome: "Ishod učenja {number}",
+    remove: "Ukloni",
+    addOutcome: "Dodaj ishod učenja",
+    promptingOption: "Način zadavanja upita",
+    zeroShot: "Zero-shot prompting",
+    zeroShotDescription: "Pravi pitanja samo na osnovu uputstava i vašeg materijala.",
+    fewShot: "Few-shot prompting",
+    fewShotDescription: "Koristi primer pitanja da prikaže željeni stil.",
+    structuredShot: "Structured-shot prompting",
+    structuredShotDescription: "Koristi strukturisan postupak za planiranje i proveru pitanja.",
+    uploading: "Otpremanje...",
+    generating: "Kreiranje pitanja...",
+    uploadAndGenerate: "Otpremi i napravi test",
+    generateQuestions: "Napravi pitanja",
+    uploadingFile: "Otpremanje datoteke...",
+    creatingQuestions: "Kreiranje pitanja je u toku. Može potrajati...",
+    yourQuestions: "Vaša pitanja",
+    questionCount: "{count} {noun}",
+    addQuestion: "Dodaj pitanje",
+    saveQuiz: "Sačuvaj test (.{format})",
+    quizFormat: "Format datoteke testa",
+    automaticVerification: "Automatska provera: {status}",
+    structure: "Struktura",
+    feasibilityFindings: "Nalazi o izvodljivosti",
+    questionNumber: "Pitanje {number}:",
+    notAnswerable: " Nije moguće odgovoriti na osnovu priloženog materijala.",
+    unsupportedAnswer: " Tačan odgovor nije potkrepljen materijalom.",
+    notExactlyOne: " Možda ne postoji tačno jedan tačan odgovor.",
+    potentialDuplicates: "Moguća duplirana pitanja",
+    questions: "Pitanja",
+    and: "i",
+    identical: "identična",
+    similar: "slična",
+    similarity: "sličnost",
+    noIssues: "Nisu pronađeni problemi sa izvodljivošću niti duplirana pitanja.",
+    noQuestions: "Još nema pitanja. Dodajte pitanje da biste napravili test.",
+    question: "Pitanje",
+    answerOptions: "Ponuđeni odgovori",
+    option: "Odgovor {letter}",
+    correctAnswer: "Tačan odgovor",
+    explanation: "Objašnjenje",
+    sourceConcept: "Pojam iz izvora",
+    saveChanges: "Sačuvaj izmene",
+    cancel: "Otkaži",
+    concept: "Pojam",
+    moveQuestionUp: "Pomeri pitanje {number} nagore",
+    moveQuestionDown: "Pomeri pitanje {number} nadole",
+    moveUp: "Pomeri nagore",
+    moveDown: "Pomeri nadole",
+    edit: "Izmeni",
+    delete: "Obriši",
+    saveOrCancel: "Sačuvajte ili otkažite izmenu pitanja pre čuvanja kviza.",
+    evaluateQuality: "Oceni kvalitet pitanja",
+    evaluatorOptional: "Ocenjivač (opciono)",
+    qualityScore: "Ocena kvaliteta (0–100)",
+    feedback: "Povratne informacije",
+    savingEvaluation: "Čuvanje ocene...",
+    saveEvaluation: "Sačuvaj ocenu",
+    score: "Ocena",
+    enterLessonTitle: "Unesite naslov lekcije pre pravljenja pitanja.",
+    enterOutcome: "Unesite bar jedan ishod učenja.",
+    enterMaterial: "Unesite nastavni materijal pre pravljenja pitanja.",
+    chooseValidFile: "Izaberite PDF, TXT, DOC ili DOCX datoteku.",
+    requestFailed: "Zahtev ka serveru nije uspeo.",
+    fillQuestion: "Popunite pitanje, sva četiri odgovora, objašnjenje i pojam.",
+    distinctOptions: "Svi ponuđeni odgovori moraju biti različiti.",
+    downloaded: "Izmenjeni test je preuzet kao {filename}.",
+    saveAsPdf: "U prozoru za štampu izaberite „Sačuvaj kao PDF“ da biste preuzeli test.",
+    saveQuizError: "Čuvanje testa nije uspelo.",
+    saveEvaluationError: "Čuvanje ocene nije uspelo.",
+    passed: "uspešno",
+    review_required: "potrebna je provera",
+    potential_duplicates: "moguća duplirana pitanja",
+  },
+};
 const PROMPTING_OPTIONS = [
   {
     value: "zero_shot_prompting",
-    label: "Zero-shot prompting",
-    description: "Generate questions from instructions and your material only.",
+    label: "zeroShot",
+    description: "zeroShotDescription",
   },
   {
     value: "few_shot_prompting",
-    label: "Few-shot prompting",
-    description: "Use a sample question to demonstrate the desired style.",
+    label: "fewShot",
+    description: "fewShotDescription",
   },
   {
     value: "structured_shot_prompting",
-    label: "Structured-shot prompting",
-    description: "Use a structured workflow to plan and check the questions.",
+    label: "structuredShot",
+    description: "structuredShotDescription",
   },
 ];
 
@@ -43,6 +227,22 @@ async function readApiResponse(response) {
 }
 
 function App() {
+  const [language, setLanguage] = useState(
+    () => window.localStorage.getItem("quiz-generator-language") === "en" ? "en" : "sr",
+  );
+  const t = (key, values = {}) =>
+    (TRANSLATIONS[language]?.[key] || TRANSLATIONS.en[key] || key).replace(
+      /\{(\w+)\}/g,
+      (placeholder, name) => values[name] ?? placeholder,
+    );
+  const questionCountLabel = (count) =>
+    t("questionCount", {
+      count,
+      noun:
+        count % 10 === 1 && count % 100 !== 11
+          ? "pitanje"
+          : "pitanja",
+    });
   const [inputMode, setInputMode] = useState("file");
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
@@ -71,6 +271,12 @@ function App() {
   const newQuestionInputRef = useRef(null);
 
   useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = TRANSLATIONS[language].pageTitle;
+    window.localStorage.setItem("quiz-generator-language", language);
+  }, [language]);
+
+  useEffect(() => {
     if (isNewQuestion) {
       newQuestionInputRef.current?.focus();
     }
@@ -97,7 +303,7 @@ function App() {
     if (busy) return;
 
     if (!lessonTitle.trim()) {
-      setError("Enter a lesson title before generating questions.");
+      setError("enterLessonTitle");
       return;
     }
 
@@ -105,12 +311,12 @@ function App() {
       learningOutcomes.length === 0 ||
       learningOutcomes.some((outcome) => !outcome.trim())
     ) {
-      setError("Enter at least one non-empty learning outcome.");
+      setError("enterOutcome");
       return;
     }
 
     if (inputMode === "text" && !text.trim()) {
-      setError("Enter some teaching material before generating questions.");
+      setError("enterMaterial");
       return;
     }
 
@@ -119,7 +325,7 @@ function App() {
     if (inputMode === "file") {
       const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
       if (!ACCEPTED_EXTENSIONS.includes(extension)) {
-        setError("Choose a PDF, TXT, DOC, or DOCX file.");
+        setError("chooseValidFile");
         return;
       }
     }
@@ -187,7 +393,7 @@ function App() {
       setHasGenerated(true);
     } catch (requestError) {
       console.error(requestError);
-      setError(requestError.message || "Could not complete the backend request.");
+      setError(requestError.message || "requestFailed");
     } finally {
       setBusy("");
     }
@@ -247,11 +453,11 @@ function App() {
     ];
 
     if (values.some((value) => !value.trim())) {
-      setEditError("Fill in the question, all four options, explanation, and concept.");
+      setEditError("fillQuestion");
       return;
     }
     if (new Set(Object.values(draft.options).map((value) => value.trim())).size !== 4) {
-      setEditError("Each answer option must be different.");
+      setEditError("distinctOptions");
       return;
     }
 
@@ -334,7 +540,7 @@ function App() {
       setEvaluationFeedback("");
     } catch (requestError) {
       console.error(requestError);
-      setEvaluationError(requestError.message || "Could not save evaluation.");
+      setEvaluationError(requestError.message || "saveEvaluationError");
     } finally {
       setEvaluationBusy(false);
     }
@@ -349,7 +555,7 @@ function App() {
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
-    setSavedMessage(`Your edited quiz was downloaded as ${filename}.`);
+    setSavedMessage(t("downloaded", { filename }));
   };
 
   const saveQuiz = async () => {
@@ -357,7 +563,7 @@ function App() {
     setSavedMessage("");
 
     if (exportFormat === "pdf") {
-      setSavedMessage("In the print dialog, choose Save as PDF to download your quiz.");
+      setSavedMessage(t("saveAsPdf"));
       window.print();
       return;
     }
@@ -376,16 +582,16 @@ function App() {
             ...Object.entries(question.options).map(
               ([letter, option]) => `${letter}. ${option}`,
             ),
-            `Correct answer: ${question.correct_answer}`,
-            `Explanation: ${question.explanation}`,
-            `Source concept: ${question.source_concept}`,
+            `${t("correctAnswer")}: ${question.correct_answer}`,
+            `${t("explanation")}: ${question.explanation}`,
+            `${t("sourceConcept")}: ${question.source_concept}`,
           ].join("\n"))
           .join("\n\n");
         downloadFile(contents, "text/plain;charset=utf-8", "quiz.txt");
       } else {
         const paragraphs = [
           new Paragraph({
-            text: "Generated Quiz",
+            text: t("yourQuestions"),
             heading: HeadingLevel.TITLE,
           }),
         ];
@@ -403,19 +609,19 @@ function App() {
           paragraphs.push(
             new Paragraph({
               children: [
-                new TextRun({ text: "Correct answer: ", bold: true }),
+                new TextRun({ text: `${t("correctAnswer")}: `, bold: true }),
                 new TextRun(question.correct_answer),
               ],
             }),
             new Paragraph({
               children: [
-                new TextRun({ text: "Explanation: ", bold: true }),
+                new TextRun({ text: `${t("explanation")}: `, bold: true }),
                 new TextRun(question.explanation),
               ],
             }),
             new Paragraph({
               children: [
-                new TextRun({ text: "Source concept: ", bold: true }),
+                new TextRun({ text: `${t("sourceConcept")}: `, bold: true }),
                 new TextRun(question.source_concept),
               ],
             }),
@@ -430,22 +636,38 @@ function App() {
       }
     } catch (saveError) {
       console.error(saveError);
-      setError(saveError.message || "Could not save the quiz.");
+      setError(saveError.message || "saveQuizError");
     }
   };
 
   return (
     <main className="app">
       <header className="page-header">
-        <p className="eyebrow">Study tool</p>
-        <h1>Generate a quiz from your material</h1>
-        <p className="subtitle">
-          Enter text or upload a document to get five multiple-choice questions.
-        </p>
+        <div className="language-switch" role="group" aria-label={t("language")}>
+          <button
+            type="button"
+            className={language === "sr" ? "language-option selected" : "language-option"}
+            aria-pressed={language === "sr"}
+            onClick={() => setLanguage("sr")}
+          >
+            Srpski
+          </button>
+          <button
+            type="button"
+            className={language === "en" ? "language-option selected" : "language-option"}
+            aria-pressed={language === "en"}
+            onClick={() => setLanguage("en")}
+          >
+            English
+          </button>
+        </div>
+        <p className="eyebrow">{t("studyTool")}</p>
+        <h1>{t("heading")}</h1>
+        <p className="subtitle">{t("subtitle")}</p>
       </header>
 
       <form className="upload-card" onSubmit={generateQuestions}>
-        <div className="input-mode" aria-label="Choose material source">
+        <div className="input-mode" aria-label={t("chooseSource")}>
           <button
             type="button"
             className={inputMode === "text" ? "mode-option selected" : "mode-option"}
@@ -457,7 +679,7 @@ function App() {
               clearQuestionState();
             }}
           >
-            Write or paste text
+            {t("writeText")}
           </button>
           <button
             type="button"
@@ -470,14 +692,14 @@ function App() {
               clearQuestionState();
             }}
           >
-            Upload a file
+            {t("uploadFile")}
           </button>
         </div>
 
         {inputMode === "text" ? (
           <>
             <label className="file-label" htmlFor="material-text">
-              Teaching material
+              {t("teachingMaterial")}
             </label>
             <textarea
               id="material-text"
@@ -488,7 +710,7 @@ function App() {
                 setError("");
                 clearQuestionState();
               }}
-              placeholder="Paste or type the text you want to use for your quiz..."
+              placeholder={t("textPlaceholder")}
               rows={10}
               disabled={Boolean(busy)}
             />
@@ -496,7 +718,7 @@ function App() {
         ) : (
           <>
             <label className="file-label" htmlFor="material-file">
-              Teaching material
+              {t("teachingMaterial")}
             </label>
             <input
               id="material-file"
@@ -509,13 +731,13 @@ function App() {
               }}
               disabled={Boolean(busy)}
             />
-            <p className="file-help">PDF, TXT, DOC, or DOCX</p>
-            {file && <p className="selected-file">Selected: {file.name}</p>}
+            <p className="file-help">{t("fileTypes")}</p>
+            {file && <p className="selected-file">{t("selectedFile", { filename: file.name })}</p>}
           </>
         )}
 
         <label className="file-label strategy-label" htmlFor="lesson-title">
-          Lesson title <span aria-hidden="true">*</span>
+          {t("lessonTitle")} <span aria-hidden="true">*</span>
         </label>
         <input
           id="lesson-title"
@@ -527,23 +749,23 @@ function App() {
             setError("");
             clearQuestionState();
           }}
-          placeholder="e.g. Introduction to cell biology"
+          placeholder={t("lessonPlaceholder")}
           required
           disabled={Boolean(busy)}
         />
 
         <fieldset className="learning-outcomes">
           <legend className="file-label">
-            Learning outcomes <span aria-hidden="true">*</span>
+            {t("learningOutcomes")} <span aria-hidden="true">*</span>
           </legend>
           <p className="strategy-help">
-            Add at least one outcome; questions will be aligned with these goals.
+            {t("addOutcomeHelp")}
           </p>
           <div className="outcome-list">
             {learningOutcomes.map((outcome, index) => (
               <div className="outcome-row" key={index}>
                 <label className="visually-hidden" htmlFor={`learning-outcome-${index}`}>
-                  Learning outcome {index + 1}
+                  {t("learningOutcome", { number: index + 1 })}
                 </label>
                 <input
                   id={`learning-outcome-${index}`}
@@ -559,7 +781,7 @@ function App() {
                     setError("");
                     clearQuestionState();
                   }}
-                  placeholder={`Learning outcome ${index + 1}`}
+                  placeholder={t("learningOutcome", { number: index + 1 })}
                   required
                   disabled={Boolean(busy)}
                 />
@@ -575,9 +797,9 @@ function App() {
                       clearQuestionState();
                     }}
                     disabled={Boolean(busy)}
-                    aria-label={`Remove learning outcome ${index + 1}`}
+                    aria-label={`${t("remove")} ${t("learningOutcome", { number: index + 1 })}`}
                   >
-                    Remove
+                    {t("remove")}
                   </button>
                 )}
               </div>
@@ -593,12 +815,12 @@ function App() {
             }}
             disabled={Boolean(busy)}
           >
-            Add learning outcome
+            {t("addOutcome")}
           </button>
         </fieldset>
 
         <label className="file-label strategy-label" htmlFor="prompting-strategy">
-          Prompting option
+          {t("promptingOption")}
         </label>
         <select
           id="prompting-strategy"
@@ -613,12 +835,12 @@ function App() {
         >
           {PROMPTING_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
-              {option.label}
+              {t(option.label)}
             </option>
           ))}
         </select>
         <p className="strategy-help">
-          {PROMPTING_OPTIONS.find((option) => option.value === selectedStrategy)?.description}
+          {t(PROMPTING_OPTIONS.find((option) => option.value === selectedStrategy)?.description)}
         </p>
 
         <button
@@ -628,23 +850,23 @@ function App() {
           }
         >
           {busy === "uploading"
-            ? "Uploading..."
+            ? t("uploading")
             : busy === "generating"
-              ? "Generating questions..."
+              ? t("generating")
               : inputMode === "file"
-                ? "Upload and generate"
-                : "Generate questions"}
+                ? t("uploadAndGenerate")
+                : t("generateQuestions")}
         </button>
         {busy && (
           <p className="progress" role="status">
             {busy === "uploading"
-              ? "Uploading your file..."
-              : "Creating questions. This may take a little while..."}
+              ? t("uploadingFile")
+              : t("creatingQuestions")}
           </p>
         )}
         {error && (
           <p className="error-message" role="alert">
-            {error}
+            {t(error)}
           </p>
         )}
       </form>
@@ -653,8 +875,8 @@ function App() {
         <section className="questions" aria-labelledby="questions-heading">
           <div className="questions-header">
             <div>
-              <h2 id="questions-heading">Your questions</h2>
-              <p className="question-count">{questions.length} questions</p>
+              <h2 id="questions-heading">{t("yourQuestions")}</h2>
+              <p className="question-count">{questionCountLabel(questions.length)}</p>
             </div>
             <div className="quiz-actions">
               <button
@@ -663,7 +885,7 @@ function App() {
                 onClick={addQuestion}
                 disabled={editingId !== null}
               >
-                Add question
+                {t("addQuestion")}
               </button>
               <button
                 type="button"
@@ -671,10 +893,10 @@ function App() {
                 onClick={saveQuiz}
                 disabled={editingId !== null || questions.length === 0}
               >
-                Save quiz (.{exportFormat})
+                {t("saveQuiz", { format: exportFormat })}
               </button>
               <label className="visually-hidden" htmlFor="export-format">
-                Quiz file format
+                {t("quizFormat")}
               </label>
               <select
                 id="export-format"
@@ -701,27 +923,29 @@ function App() {
               role="status"
             >
               <h3 id="validation-heading">
-                Automatic verification: {validation.status.replaceAll("_", " ")}
+                {t("automaticVerification", {
+                  status: t(validation.status),
+                })}
               </h3>
               <p>
-                Structure: {validation.structure.status} (
-                {validation.structure.question_count} questions).
+                {t("structure")}: {t(validation.structure.status)} (
+                {questionCountLabel(validation.structure.question_count)}).
               </p>
               {validation.feasibility.findings.length > 0 && (
                 <div>
-                  <strong>Feasibility findings</strong>
+                  <strong>{t("feasibilityFindings")}</strong>
                   <ul>
                     {validation.feasibility.findings.map((finding) => (
                       <li key={finding.question_id}>
-                        Question {finding.question_id}: {finding.feedback}
+                        {t("questionNumber", { number: finding.question_id })} {finding.feedback}
                         {!finding.answerable_from_material
-                          ? " Not answerable from the supplied material."
+                          ? t("notAnswerable")
                           : ""}
                         {!finding.correct_answer_supported
-                          ? " Correct answer not supported by the material."
+                          ? t("unsupportedAnswer")
                           : ""}
                         {!finding.exactly_one_correct_option
-                          ? " It may not have exactly one correct option."
+                          ? t("notExactlyOne")
                           : ""}
                       </li>
                     ))}
@@ -730,12 +954,12 @@ function App() {
               )}
               {validation.duplicates.pairs.length > 0 && (
                 <div>
-                  <strong>Potential duplicate questions</strong>
+                  <strong>{t("potentialDuplicates")}</strong>
                   <ul>
                     {validation.duplicates.pairs.map((pair) => (
                       <li key={pair.question_ids.join("-")}>
-                        Questions {pair.question_ids.join(" and ")} (
-                        {pair.identical ? "identical" : "similar"}, similarity{" "}
+                        {t("questions")} {pair.question_ids.join(` ${t("and")} `)} (
+                        {pair.identical ? t("identical") : t("similar")}, {t("similarity")}{" "}
                         {Math.round(pair.similarity * 100)}%).
                       </li>
                     ))}
@@ -743,7 +967,7 @@ function App() {
                 </div>
               )}
               {validation.status === "passed" && (
-                <p>No feasibility issues or duplicate questions were detected.</p>
+                <p>{t("noIssues")}</p>
               )}
             </section>
           )}
@@ -751,15 +975,13 @@ function App() {
             <p className="saved-message" role="status">{savedMessage}</p>
           )}
           {questions.length === 0 && (
-            <p className="empty-questions">
-              No questions yet. Add a question to build your quiz.
-            </p>
+            <p className="empty-questions">{t("noQuestions")}</p>
           )}
           {questions.map((question, index) => (
             <article className="question-card" key={question.id}>
               {editingId === question.id && draft ? (
                 <form className="question-editor" onSubmit={saveQuestion}>
-                  <label htmlFor={`question-${question.id}`}>Question</label>
+                  <label htmlFor={`question-${question.id}`}>{t("question")}</label>
                   <textarea
                     id={`question-${question.id}`}
                     ref={isNewQuestion ? newQuestionInputRef : null}
@@ -770,11 +992,11 @@ function App() {
                     }
                   />
                   <fieldset className="option-editor">
-                    <legend>Answer options</legend>
+                    <legend>{t("answerOptions")}</legend>
                     {["A", "B", "C", "D"].map((letter) => (
                       <div className="option-field" key={letter}>
                         <label htmlFor={`option-${question.id}-${letter}`}>
-                          Option {letter}
+                          {t("option", { letter })}
                         </label>
                         <input
                           id={`option-${question.id}-${letter}`}
@@ -792,7 +1014,7 @@ function App() {
                       </div>
                     ))}
                   </fieldset>
-                  <label htmlFor={`answer-${question.id}`}>Correct answer</label>
+                  <label htmlFor={`answer-${question.id}`}>{t("correctAnswer")}</label>
                   <select
                     id={`answer-${question.id}`}
                     value={draft.correct_answer}
@@ -804,7 +1026,7 @@ function App() {
                       <option key={letter} value={letter}>{letter}</option>
                     ))}
                   </select>
-                  <label htmlFor={`explanation-${question.id}`}>Explanation</label>
+                  <label htmlFor={`explanation-${question.id}`}>{t("explanation")}</label>
                   <textarea
                     id={`explanation-${question.id}`}
                     value={draft.explanation}
@@ -813,7 +1035,7 @@ function App() {
                       setDraft({ ...draft, explanation: event.target.value })
                     }
                   />
-                  <label htmlFor={`concept-${question.id}`}>Source concept</label>
+                  <label htmlFor={`concept-${question.id}`}>{t("sourceConcept")}</label>
                   <input
                     id={`concept-${question.id}`}
                     value={draft.source_concept}
@@ -826,14 +1048,14 @@ function App() {
                   )}
                   <div className="question-actions">
                     <button className="save-button" type="submit">
-                      Save changes
+                      {t("saveChanges")}
                     </button>
                     <button
                       className="secondary-button"
                       type="button"
                       onClick={cancelEditing}
                     >
-                      Cancel
+                      {t("cancel")}
                     </button>
                   </div>
                 </form>
@@ -852,22 +1074,22 @@ function App() {
                       >
                         <span className="option-letter">{letter}.</span> {option}
                         {letter === question.correct_answer && (
-                          <span className="answer-label">Correct answer</span>
+                          <span className="answer-label">{t("correctAnswer")}</span>
                         )}
                       </li>
                     ))}
                   </ul>
                   <p className="explanation">{question.explanation}</p>
-                  <p className="source">Concept: {question.source_concept}</p>
+                  <p className="source">{t("concept")}: {question.source_concept}</p>
                   <div className="question-actions">
                     <button
                       className="order-button"
                       type="button"
                       onClick={() => moveQuestion(index, -1)}
                       disabled={editingId !== null || index === 0}
-                      aria-label={`Move question ${question.id} up`}
+                      aria-label={t("moveQuestionUp", { number: question.id })}
                     >
-                      Move up
+                      {t("moveUp")}
                     </button>
                     <button
                       className="order-button"
@@ -876,23 +1098,23 @@ function App() {
                       disabled={
                         editingId !== null || index === questions.length - 1
                       }
-                      aria-label={`Move question ${question.id} down`}
+                      aria-label={t("moveQuestionDown", { number: question.id })}
                     >
-                      Move down
+                      {t("moveDown")}
                     </button>
                     <button
                       className="secondary-button"
                       type="button"
                       onClick={() => startEditing(question)}
                     >
-                      Edit
+                      {t("edit")}
                     </button>
                     <button
                       className="delete-button"
                       type="button"
                       onClick={() => deleteQuestion(question.id)}
                     >
-                      Delete
+                      {t("delete")}
                     </button>
                   </div>
                 </>
@@ -901,20 +1123,20 @@ function App() {
           ))}
           {editingId !== null && (
             <p className="progress" role="status">
-              Save or cancel the current question before saving the quiz.
+              {t("saveOrCancel")}
             </p>
           )}
           <section className="evaluation-panel" aria-labelledby="evaluation-heading">
-            <h3 id="evaluation-heading">Evaluate question quality</h3>
+            <h3 id="evaluation-heading">{t("evaluateQuality")}</h3>
             <form className="evaluation-form" onSubmit={submitEvaluation}>
-              <label htmlFor="evaluation-evaluator">Evaluator (optional)</label>
+              <label htmlFor="evaluation-evaluator">{t("evaluatorOptional")}</label>
               <input
                 id="evaluation-evaluator"
                 value={evaluationEvaluator}
                 onChange={(event) => setEvaluationEvaluator(event.target.value)}
                 maxLength={255}
               />
-              <label htmlFor="evaluation-score">Quality score (0–100)</label>
+              <label htmlFor="evaluation-score">{t("qualityScore")}</label>
               <input
                 id="evaluation-score"
                 type="number"
@@ -925,7 +1147,7 @@ function App() {
                 onChange={(event) => setEvaluationScore(event.target.value)}
                 required
               />
-              <label htmlFor="evaluation-feedback">Feedback</label>
+              <label htmlFor="evaluation-feedback">{t("feedback")}</label>
               <textarea
                 id="evaluation-feedback"
                 value={evaluationFeedback}
@@ -937,13 +1159,13 @@ function App() {
                 <p className="error-message" role="alert">{evaluationError}</p>
               )}
               <button type="submit" disabled={evaluationBusy || editingId !== null}>
-                {evaluationBusy ? "Saving evaluation..." : "Save evaluation"}
+                {evaluationBusy ? t("savingEvaluation") : t("saveEvaluation")}
               </button>
             </form>
             {evaluations.map((evaluation) => (
               <article className="saved-evaluation" key={evaluation.id}>
                 <p>
-                  Score: {evaluation.score}/100
+                  {t("score")}: {evaluation.score}/100
                   {evaluation.evaluator ? ` — ${evaluation.evaluator}` : ""}
                 </p>
                 <p>{evaluation.feedback}</p>
