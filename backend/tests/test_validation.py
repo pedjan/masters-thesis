@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from backend.models import MCQQuestion, MCQSet
 from backend.validation import (
+    FeasibilityReview,
     _find_duplicate_questions,
     validate_generated_questions,
 )
@@ -79,18 +80,35 @@ class QuestionValidationTests(unittest.TestCase):
                 )
             ]
         )
+        request = {}
         client = SimpleNamespace(
             chat=SimpleNamespace(
-                completions=SimpleNamespace(create=lambda **kwargs: response)
+                completions=SimpleNamespace(
+                    create=lambda **kwargs: (request.update(kwargs) or response)
+                )
             )
         )
 
-        with patch("backend.validation.create_client", return_value=(client, "test-model")):
+        with (
+            patch("backend.validation.create_client", return_value=(client, "test-model")),
+            patch.dict("os.environ", {"LLM_PROVIDER": "lm_studio"}),
+        ):
             result = validate_generated_questions("The material states facts two through five.", questions)
 
         self.assertEqual(result["status"], "review_required")
         self.assertEqual(result["structure"]["status"], "passed")
         self.assertEqual(result["feasibility"]["findings"][0]["question_id"], 1)
+        self.assertEqual(
+            request["response_format"],
+            {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "feasibility_review",
+                    "strict": True,
+                    "schema": FeasibilityReview.model_json_schema(),
+                },
+            },
+        )
 
 
 if __name__ == "__main__":
